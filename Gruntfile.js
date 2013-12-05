@@ -77,6 +77,18 @@ module.exports = function( grunt )
 
 			},
 
+
+			/**
+			 * HTML Linter
+			 */
+			htmllint:
+			{
+				all :
+				[
+					DIST_DIR + '/**/*.html'
+				]
+			},
+
 			/**
 			 * Launch the distribution dir via connect middleware
 			 * @type { Object }
@@ -108,13 +120,14 @@ module.exports = function( grunt )
   grunt.loadNpmTasks( 'grunt-contrib-connect' );
 
   grunt.loadNpmTasks( 'assemble' );
+  grunt.loadNpmTasks( 'grunt-html' );
   
 
   /**
    * Register Tasks
    */
   grunt.registerTask( 'clear', [ 'clean', 'mkdir' ] );
-  grunt.registerTask( 'html', [ 'assemble' ] );
+  grunt.registerTask( 'html', [ 'assemble', 'htmllint' ] );
  	
 
  	grunt.registerTask( 'build', [ 'html' ] );
