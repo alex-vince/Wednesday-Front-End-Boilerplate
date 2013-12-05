@@ -35,11 +35,47 @@ module.exports = function( grunt )
 			mkdir: {
 		    all: {
 		      options: {
-		        mode: '0700',
-		        create: [ DIST_DIR ]
+		        mode : '0700',
+		        create : [ DIST_DIR ]
 		      },
 		    },
 		  },
+
+			/**
+			 * Assemble
+			 */
+			assemble :
+			{
+
+				/**
+				 * Task level options
+				 */
+				options :
+				{
+					prettify : { indent: 2 },
+					marked : { sanitize: false },
+					data : 'src/**/*.{json,yml}',
+					assets : DIST_DIR + '/resources',
+					helpers : 'src/helpers/helper-*.js',
+					layoutdir : 'src/templates/layouts',
+					partials : [ 'src/templates/includes/**/*hbs' ]
+
+				},
+				site: 
+				{
+					options : { layout: 'default.hbs' },
+					files :
+					[
+						{
+							expand : true,
+							cwd : 'src/templates/pages',
+							src : [ '*.hbs' ],
+							dest : DIST_DIR
+						}
+					] 
+				}
+
+			},
 
 			/**
 			 * Launch the distribution dir via connect middleware
@@ -52,7 +88,7 @@ module.exports = function( grunt )
 					options:
 					{
 						hostname : '*',
-						port: PORT,
+						port : PORT,
 						base : DIST_DIR,
 						keepalive: true
 					}
@@ -70,13 +106,18 @@ module.exports = function( grunt )
 	grunt.loadNpmTasks( 'grunt-contrib-clean' );
 	grunt.loadNpmTasks( 'grunt-mkdir' );
   grunt.loadNpmTasks( 'grunt-contrib-connect' );
+
+  grunt.loadNpmTasks( 'assemble' );
   
 
   /**
    * Register Tasks
    */
   grunt.registerTask( 'clear', [ 'clean', 'mkdir' ] );
- 	grunt.registerTask( 'build', [] );
+  grunt.registerTask( 'html', [ 'assemble' ] );
+ 	
+
+ 	grunt.registerTask( 'build', [ 'html' ] );
   grunt.registerTask( 'server', [ 'connect' ] );
 
 

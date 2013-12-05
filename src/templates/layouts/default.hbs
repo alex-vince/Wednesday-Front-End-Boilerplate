@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="{{ localisation.lang }}"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>{{ title }} - {{ meta.title }}</title>
+
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta name="author" content="{{ meta.author }}" />
+        <meta name="description" content="{{ meta.description }}">
+        <meta name="keywords" content="{{ meta.keywords }}">
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content="{{ meta.title }}" />
+        <meta property="og:description" content="{{ meta.description }}" />
+
+        <!-- CSS -->
+        <!-- Lib-izr -->
+    </head>
+    <body class="{{ body-class }}">
+
+    {{!-- Inc Header --}}
+    {{> header }}
+
+
+    {{!-- Inc Template Body --}}
+    <div class="container">
+        {{> body }}
+    </div>
+    
+    {{!-- Inc Footer --}}
+    {{> footer }}
+            
+
+    {{!-- Js --}}
+            
+    </body>
+</html>
