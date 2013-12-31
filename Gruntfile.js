@@ -6,7 +6,8 @@ module.exports = function( grunt )
 	//Define Constants
 	var PORT 					= 3000,
 			RELOAD_PORT 	= 35729, 
-			DIST_DIR			= 'distribution';
+			DIST_DIR			= 'distribution',
+			RESOURCES_DIR = DIST_DIR + '/resources';
 
 
 	/**
@@ -25,7 +26,13 @@ module.exports = function( grunt )
 				dist : 
 				[
 					DIST_DIR
+				],
+
+				html :
+				[
+					DIST_DIR + '/**/*.html'
 				]
+
 			},
 
 			/**
@@ -89,6 +96,67 @@ module.exports = function( grunt )
 				]
 			},
 
+
+			/**
+			 * Less
+			 */
+			recess:
+			{
+				options: 
+				{
+        	compile: true
+      	},
+
+      	screen:
+      	{
+      		files: 
+      		{
+          	'distribution/resources/css/screen.css' : ['src/styles/less/screen.less']
+        	}
+      	}
+
+			},
+
+			csslint: 
+			{
+	      options:
+	      {
+	        'overqualified-elements': false,
+	        'adjoining-classes': false,
+	        'unqualified-attributes': false,
+	        'compatible-vendor-prefixes': false,
+	        'font-sizes': false,
+	        'floats': false,
+	        'duplicate-background-images': false
+	      },
+	      screen:
+	      {
+	        src: [ 'distribution/resources/css/screen.css' ]
+	      }
+    	},
+
+    	/**
+    	 * JavaScript
+    	 */
+    	uglify: 
+    	{
+				all: 
+				{
+	        options: 
+	        {
+	          beautify: true,
+	          sourceMap: 'distribution/resources/js/app.map.js',
+          	sourceMappingURL: 'app.map.js',
+          	sourceMapRoot:  '/'
+	        },
+
+	        files:
+	        {
+          	'distribution/resources/js/app.min.js': ['src/js/**/*.js']
+          }
+	      }
+    	},
+
 			/**
 			 * Launch the distribution dir via connect middleware
 			 * @type { Object }
@@ -101,15 +169,61 @@ module.exports = function( grunt )
 					{
 						hostname : '*',
 						port : PORT,
-						base : DIST_DIR,
-						keepalive: true
+						base : DIST_DIR
 					}
 				}
-			}
+			},
+
+
+			watch:
+			{
+	      options:
+	      {
+	        livereload: true
+	      },
+
+	      html:
+	      {
+	        files: 
+	        [
+		        'src/templates/**/*.hbs',
+		        'README.md',
+		        'src/data/**/*.json'
+	        ],
+	        tasks: ['clean:html', 'html']
+	      },
+
+	      css: 
+	      {
+	        files: 'src/styles/**/*.less',
+	        tasks: [ 'recess', 'csslint' ]
+	      },
+
+	      js:
+	      {
+	      	files: 'src/js/**/*.js',
+	      	tasks: [ 'uglify' ]
+
+	      }
+
+	    }
 
 
 		}
 	);
+
+
+	grunt.event.on('watch', function( action, filepath ) 
+	{
+
+		grunt.config(['assemble', 'all'], filepath);
+		grunt.config(['htmllint', 'all'], filepath);
+
+		grunt.config(['csslint', 'all'], filepath);
+
+		grunt.config(['uglify', 'all'], filepath);
+
+	});
 
 
 	/**
@@ -117,10 +231,33 @@ module.exports = function( grunt )
 	 */
 	grunt.loadNpmTasks( 'grunt-contrib-clean' );
 	grunt.loadNpmTasks( 'grunt-mkdir' );
-  grunt.loadNpmTasks( 'grunt-contrib-connect' );
+ 
 
+  /**
+   * HTML
+   */
   grunt.loadNpmTasks( 'assemble' );
   grunt.loadNpmTasks( 'grunt-html' );
+
+
+  /**
+   * CSS
+   */
+  grunt.loadNpmTasks( 'grunt-recess' );
+  grunt.loadNpmTasks( 'grunt-contrib-csslint' );
+
+
+  /**
+   * JS
+   */
+  grunt.loadNpmTasks( 'grunt-contrib-uglify' );
+
+
+  /**
+   * Server
+   */
+  grunt.loadNpmTasks( 'grunt-contrib-connect' );
+  grunt.loadNpmTasks( 'grunt-contrib-watch' );
   
 
   /**
@@ -128,10 +265,13 @@ module.exports = function( grunt )
    */
   grunt.registerTask( 'clear', [ 'clean', 'mkdir' ] );
   grunt.registerTask( 'html', [ 'assemble', 'htmllint' ] );
+  grunt.registerTask( 'css', [ 'recess', 'csslint' ] );
+  grunt.registerTask( 'js', [ 'uglify' ] );
  	
 
- 	grunt.registerTask( 'build', [ 'html' ] );
-  grunt.registerTask( 'server', [ 'connect' ] );
+  //Add tasks to build here
+ 	grunt.registerTask( 'build', [ 'html', 'css', 'js' ] );
+  grunt.registerTask( 'server', [ 'connect', 'watch' ] );
 
 
   /**

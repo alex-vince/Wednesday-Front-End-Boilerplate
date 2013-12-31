@@ -7,7 +7,7 @@
 	var console = window.console || undefined;
 
 	//App Namespace
-	var Wednesday = window.Wednesday = window.Wednesday || {}
-
+	var Wednesday = window.Wednesday = window.Wednesday || {};
+	
 
 })( jQuery, window, document );
