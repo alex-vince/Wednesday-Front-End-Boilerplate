@@ -138,6 +138,16 @@ module.exports = function( grunt )
     	/**
     	 * JavaScript
     	 */
+    	jshint: 
+			{
+				options: 
+				{
+					jshintrc: '.jshintrc'
+				},
+				all: [  'src/js/**/*.js' ]
+			},
+
+
     	uglify: 
     	{
 				all: 
@@ -156,6 +166,7 @@ module.exports = function( grunt )
           }
 	      }
     	},
+
 
 			/**
 			 * Launch the distribution dir via connect middleware
@@ -202,7 +213,7 @@ module.exports = function( grunt )
 	      js:
 	      {
 	      	files: 'src/js/**/*.js',
-	      	tasks: [ 'uglify' ]
+	      	tasks: [ 'uglify', 'jshint' ]
 
 	      }
 
@@ -222,6 +233,7 @@ module.exports = function( grunt )
 		grunt.config(['csslint', 'all'], filepath);
 
 		grunt.config(['uglify', 'all'], filepath);
+		grunt.config(['jslint', 'all'], filepath);
 
 	});
 
@@ -250,8 +262,9 @@ module.exports = function( grunt )
   /**
    * JS
    */
+  grunt.loadNpmTasks( 'grunt-contrib-jshint' );
   grunt.loadNpmTasks( 'grunt-contrib-uglify' );
-
+ 
 
   /**
    * Server
@@ -266,7 +279,7 @@ module.exports = function( grunt )
   grunt.registerTask( 'clear', [ 'clean', 'mkdir' ] );
   grunt.registerTask( 'html', [ 'assemble', 'htmllint' ] );
   grunt.registerTask( 'css', [ 'recess', 'csslint' ] );
-  grunt.registerTask( 'js', [ 'uglify' ] );
+  grunt.registerTask( 'js', [ 'jshint', 'uglify' ] );
  	
 
   //Add tasks to build here

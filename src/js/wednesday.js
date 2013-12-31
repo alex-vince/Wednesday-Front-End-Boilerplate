@@ -1,13 +1,9 @@
-( function( $, window, document, undefined )
+( function( $, window, undefined )
 {
 
 	'use strict';
 
-	//Localise Globals
-	var console = window.console || undefined;
+	//Example Module
 
-	//App Namespace
-	var Wednesday = window.Wednesday = window.Wednesday || {};
-	
 
-})( jQuery, window, document );
+})( this.jQuery, this );
