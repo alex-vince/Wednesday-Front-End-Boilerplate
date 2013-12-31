@@ -31,6 +31,21 @@ module.exports = function( grunt )
 				html :
 				[
 					DIST_DIR + '/**/*.html'
+				],
+
+				css :
+				[
+					DIST_DIR + 'resources/css/**/*.css'
+				],
+
+				js :
+				[
+					DIST_DIR + 'resources/js/**/*.js'
+				],
+
+				imgs :
+				[
+					DIST_DIR + 'resources/img/**/*.{gif,jpg,jpeg,png,svg}'
 				]
 
 			},
@@ -168,6 +183,28 @@ module.exports = function( grunt )
     	},
 
 
+    	/**
+    	 * Images
+    	 */
+    	imagemin: 
+    	{
+	      dynamic: 
+	      {
+	        options:
+	        {
+	          optimizationLevel: 3
+	        },
+	        files:
+	        [{
+	          expand: true,
+	          cwd: 'src/img/',
+	          src: ['**/*.{gif,jpg,jpeg,png}'],
+	          dest: 'distribution/resources/img/'
+	        }]
+	      }
+	    },
+
+
 			/**
 			 * Launch the distribution dir via connect middleware
 			 * @type { Object }
@@ -185,7 +222,9 @@ module.exports = function( grunt )
 				}
 			},
 
-
+			/**
+			 * Live Reload
+			 */
 			watch:
 			{
 	      options:
@@ -207,15 +246,24 @@ module.exports = function( grunt )
 	      css: 
 	      {
 	        files: 'src/styles/**/*.less',
-	        tasks: [ 'recess', 'csslint' ]
+	        tasks: [ 'clean:css', 'recess', 'csslint' ]
 	      },
 
 	      js:
 	      {
 	      	files: 'src/js/**/*.js',
-	      	tasks: [ 'uglify', 'jshint' ]
+	      	tasks: [ 'clean:js', 'jshint', 'uglify' ]
 
-	      }
+	      },
+
+	      images: 
+	      {
+	        files: 
+	        [
+	        	'src/img/**/*.{gif,jpg,jpeg,png,svg}'
+	        ],
+	        tasks: [ 'clean:imgs', 'imagemin' ]
+      	}
 
 	    }
 
@@ -227,13 +275,15 @@ module.exports = function( grunt )
 	grunt.event.on('watch', function( action, filepath ) 
 	{
 
-		grunt.config(['assemble', 'all'], filepath);
-		grunt.config(['htmllint', 'all'], filepath);
+		grunt.config( [ 'assemble', 'all' ], filepath );
+		grunt.config( [ 'htmllint', 'all' ], filepath );
 
-		grunt.config(['csslint', 'all'], filepath);
+		grunt.config( [ 'csslint', 'all' ], filepath );
 
-		grunt.config(['uglify', 'all'], filepath);
-		grunt.config(['jslint', 'all'], filepath);
+		grunt.config( [ 'uglify', 'all' ], filepath );
+		grunt.config( [ 'jslint', 'all' ], filepath );
+
+		grunt.config( [ 'imagemin', 'all'], filepath);
 
 	});
 
@@ -264,7 +314,13 @@ module.exports = function( grunt )
    */
   grunt.loadNpmTasks( 'grunt-contrib-jshint' );
   grunt.loadNpmTasks( 'grunt-contrib-uglify' );
- 
+
+
+  /**
+   * Images
+   */
+ 	grunt.loadNpmTasks('grunt-contrib-imagemin');
+
 
   /**
    * Server
@@ -280,10 +336,11 @@ module.exports = function( grunt )
   grunt.registerTask( 'html', [ 'assemble', 'htmllint' ] );
   grunt.registerTask( 'css', [ 'recess', 'csslint' ] );
   grunt.registerTask( 'js', [ 'jshint', 'uglify' ] );
+  grunt.registerTask( 'img', [ 'imagemin' ] );
  	
 
-  //Add tasks to build here
- 	grunt.registerTask( 'build', [ 'html', 'css', 'js' ] );
+  //Add Tasks to build here
+ 	grunt.registerTask( 'build', [ 'html', 'css', 'js', 'img' ] );
   grunt.registerTask( 'server', [ 'connect', 'watch' ] );
 
 
