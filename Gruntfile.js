@@ -63,6 +63,24 @@ module.exports = function( grunt )
 		    },
 		  },
 
+
+		  /**
+		   * Copy all static assets
+		   * @type {[type]}
+		   */
+		  copy: 
+		  {
+
+  			js:
+  			{
+  				files:
+  				[
+  					{ expand: true, flatten: true, src: [ 'bower_components/modernizr/modernizr.js' ], dest: DIST_DIR + '/resources/js/vendor/', filter: 'isFile'},
+  				]
+  			}
+
+  		},
+
 			/**
 			 * Assemble
 			 */
@@ -110,6 +128,20 @@ module.exports = function( grunt )
 					DIST_DIR + '/**/*.html'
 				]
 			},
+
+
+			htmlConvert:
+			{
+		    options:
+		    {
+		      // custom options, see below    
+		    },
+		    'JST':
+		    {
+		      src: [ 'src/templates/client/**/*.hbs' ],
+		      dest: 'distribution/resources/templates/templates.js'
+		    }
+		  },
 
 
 			/**
@@ -177,7 +209,13 @@ module.exports = function( grunt )
 
 	        files:
 	        {
-          	'distribution/resources/js/app.min.js': ['src/js/**/*.js']
+          	'distribution/resources/js/app.min.js': ['src/js/**/*.js'],
+          	'distribution/resources/js/lib.min.js': 
+          	[
+          		'bower_components/jquery/jquery.js',
+          		'bower_components/underscore/underscore.js',
+          		'bower_components/handlebars/handlebars.js'
+          	]
           }
 	      }
     	},
@@ -293,6 +331,7 @@ module.exports = function( grunt )
 	 */
 	grunt.loadNpmTasks( 'grunt-contrib-clean' );
 	grunt.loadNpmTasks( 'grunt-mkdir' );
+	grunt.loadNpmTasks( 'grunt-contrib-copy' );
  
 
   /**
@@ -300,6 +339,7 @@ module.exports = function( grunt )
    */
   grunt.loadNpmTasks( 'assemble' );
   grunt.loadNpmTasks( 'grunt-html' );
+  grunt.loadNpmTasks( 'grunt-html-convert' );
 
 
   /**
@@ -333,9 +373,9 @@ module.exports = function( grunt )
    * Register Tasks
    */
   grunt.registerTask( 'clear', [ 'clean', 'mkdir' ] );
-  grunt.registerTask( 'html', [ 'assemble', 'htmllint' ] );
+  grunt.registerTask( 'html', [ 'assemble', 'htmllint', 'htmlConvert' ] );
   grunt.registerTask( 'css', [ 'recess', 'csslint' ] );
-  grunt.registerTask( 'js', [ 'jshint', 'uglify' ] );
+  grunt.registerTask( 'js', [ 'jshint', 'uglify', 'copy:js' ] );
   grunt.registerTask( 'img', [ 'imagemin' ] );
  	
 

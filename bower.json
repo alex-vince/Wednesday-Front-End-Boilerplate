@@ -5,7 +5,10 @@
     "modernizr": "~2.7.0",
     "jquery": "~1.9.0",
     "normalize-less": "*",
-    "detectizr": "~1.4.5"
+    "detectizr": "~1.4.5",
+    "underscore": "~1.5.2",
+    "backbone": "~1.1.0",
+    "handlebars": "~1.2.1"
   },
   "repository": {
     "type": "git",
