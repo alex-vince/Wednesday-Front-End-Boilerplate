@@ -8,7 +8,9 @@
     "detectizr": "~1.4.5",
     "underscore": "~1.5.2",
     "backbone": "~1.1.0",
-    "handlebars": "~1.2.1"
+    "handlebars": "~1.2.1",
+    "wednesday-ui": "git://github.com/alex-wednesday/Wednesday-Ui.git",
+    "wednesday-js": "git://github.com/alex-wednesday/Wednesday-Js-Lib.git"
   },
   "repository": {
     "type": "git",
